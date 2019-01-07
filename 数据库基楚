@@ -1,0 +1,55 @@
+1、连接数据库格式：
+  #mysql -h 服务器ip或域名 -u 用户名 -p 密码 数据库名称
+  
+2、常用的SQL命令分类
+  DDL 数据定义语言 （create,alter,drop）
+  DML 数据操作语言 （insert,update,delete）
+  DCL 数据控制语言 （grant,revoke）
+  DTL 数据事务语言 （commit,rollback,savepoint）
+  
+3、相关命令：
+  show databases;         查看数据库
+  show character set      查看所有可用编码
+  use mysql;              切换数据库
+  select database();      查看当前数据库
+  desc 数据表              查看数据表结构、
+  insert into 数据库名称.数据表名称 values(值列表);
+  update 数据库名称.数据表名称 set 字段=值 [where 条件];
+  delete from 数据表名称 where 字段=值;           //删除表中数据
+  drop table 数据表；           //删除整个数据表
+  
+4、数据类型
+  tinyint       1Byte     -128~127           微小整数
+  smallint      2Byte     -32768~32767       小整数
+  mediumint     3Byte                        中整数
+  int           4Byte                        大整数
+  bigint        8Byte                        极大整数
+  float         4Byte                        单精度浮点数（小数用法：Decimal(M,D)）
+  double        8Byte                        双精度浮点数
+  
+  mysql> create table school.num(
+         id tinyint,
+         age int(3),
+         score float(4,2));
+         
+5、字符类型
+  char        固定长度，最大长度255字符
+  varchar     可变长度
+  text/blob   字符数大于65535时使用
+  
+6、时间类型
+  datetime 占8Byte
+    范围：1000-01-01 00:00:00:000000-9999-12-31 23:59:59:999999
+  timestamp 占4Byte
+    范围：1970-01-01 00:00:00:000000-2038-01-19 03:14:07:999999
+  date 占4Byte
+    范围：0001-01-01-9999-12-31
+  year 占1Byte
+    范围：1901-2155
+  time 占3Byte
+    范围：HH:MM:ss
+    
+7、枚举类型
+  enum（值1,值2,值3...）   //单选项
+  set（值1,值2,值3...）    //多选项
+  
