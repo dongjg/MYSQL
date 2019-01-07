@@ -51,40 +51,22 @@
     -FOREIGN KEY 外键
       外键：让当前字段的值在另一个表中某个字段值的范围内选择。
       使用外键的条件：
+        -表存储引擎必须是innodb（默认）
+        -主键和外键的字段类型必须一致
+        -被参照字段必须是索引类型中的一种
         
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-  
+       创建外键的语法;
+        foreign key(表A的字段名称) references 表B(字段名称) on dateup cascade on delete cascade
+        
+        创建外键：
+          create table press.book(
+            书名 char(20),
+            作者 char(10),
+            foreign key(作者) references press.author(姓名) on update cascade on delete cascade);
+        
+        对现有的数据表中创建外键：
+          alter table press.book(
+            add
+            foreign key(作者) reference press.author(姓名)
+            on update cascade
+            on delete cascade);
