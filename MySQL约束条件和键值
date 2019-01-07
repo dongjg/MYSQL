@@ -1,4 +1,17 @@
-一、键值主要作用：索引、约束条件
+一、约束条件
+  1、常用约束条件：
+    null        允许为空，默认值
+    not null    不允许为空
+    key         索引类型
+    default     设置默认值，缺省为NULL
+    
+    mysql>create table school.rest(
+          name char(5) not null,
+          gender enum("male","female") not null default "male",
+          age int(3) not null default 21,
+          interest set("book","movie")
+          );
+二、键值主要作用：索引、约束条件
   1、索引：对数据表中的若干字段进行排序的方法，可以快速定位数据的具体位置。索引的排序时独立的，不影响原有的数据。
     优点：-通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性，
          -可以加快数据检索速度
