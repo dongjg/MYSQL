@@ -1,0 +1,24 @@
+一、键值主要作用：索引、约束条件
+  1、索引：对数据表中的若干字段进行排序的方法，可以快速定位数据的具体位置。索引的排序时独立的，不影响原有的数据。
+    优点：-通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性，
+         -可以加快数据检索速度
+    缺点：-会降低数据库的写速度
+         -索引需要额外占用物理空间
+  2、键值类型
+    -INDEX 普通索引 
+      -一个表中可以有多个INDEX字段
+      -字段值允许重复，且可以赋NULL值
+      -把经常查询的字段设置为INDEX字段
+      -KEY标志为：MUL
+        mysql> create table school.info(
+                id int(6) not null,
+                name varchar(5),
+                sex enum('male','female'),
+                age int(3) default 1,
+                index(id),index(name));
+    -UNIQUE 唯一索引
+    -FULLTEXT 全文索引
+    -PRIMSRY KEY 主键
+    -FOREIGN KEY 外键
+    
+  
