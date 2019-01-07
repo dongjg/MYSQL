@@ -10,15 +10,81 @@
       -字段值允许重复，且可以赋NULL值
       -把经常查询的字段设置为INDEX字段
       -KEY标志为：MUL
-        mysql> create table school.info(
-                id int(6) not null,
-                name varchar(5),
-                sex enum('male','female'),
-                age int(3) default 1,
-                index(id),index(name));
+        用法：
+          创建索引： create index 索引名称 on 数据表（字段名称）;
+          删除索引： drop index 索引名称 on 数据表;
+          查询索引： show index from 数据表名称\G;
+          
     -UNIQUE 唯一索引
-    -FULLTEXT 全文索引
-    -PRIMSRY KEY 主键
-    -FOREIGN KEY 外键
     
+    -FULLTEXT 全文索引
+    
+    -PRIMSRY KEY 主键
+      -一个表只能有一个primary key字段
+      -对应字段值不允许重复，且不允许赋NULL值
+      -多个字段可以组合作为PRIMARY KEY，称为符合主键，但必须一起创建
+      -主键字段的KEY标志为PRI
+      -通常与AUTO_INCREMENT连用
+      -把表中唯一标识记录字段设置为主键字段
+        
+        例：create table stu(
+            id char(9),
+            name char(9),
+            primary key(id));
+            或者：id char(9) primary key
+            
+          对已存在的数据表创建主键索引
+          语法：
+            alter table stu add primary key(id);
+          删除主键索引：
+            alter table stu drop primary key;
+          复合主键：
+            primary key(id,name);
+          自动添加属性：auto_increment
+            create table student(
+                id int(100) auto_increment primary key,
+                name char(10));
+           当同时有自增长和主键时，一定通过alter将自增长删除后才可以删除主键，否则无法删除
+              alter table modify student id int(100);
+              alter tabel student drop primary key;
+            
+    -FOREIGN KEY 外键
+      外键：让当前字段的值在另一个表中某个字段值的范围内选择。
+      使用外键的条件：
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
   
