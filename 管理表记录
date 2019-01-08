@@ -57,7 +57,7 @@
   -模糊查询
            用法：where 字段名 like '通配符'
                 '_' 匹配单个字符
-                '%' 匹配0~N个字符
+                '%' 匹配0~N个字符  等同于".*"
            
            以y结尾：
            select name from user where name like 'y$';
