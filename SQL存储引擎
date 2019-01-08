@@ -1,0 +1,10 @@
+show engines;       //查看数据库支持的引擎
+show create table 表名;         //查看建表的命令
+show table status like 'user'\G;  //查看user表的状态信息
+
+修改数据库服务默认引擎：
+  #vim /etc/my.cnf
+      [mysqld]
+      default-storage-engine=muisam
+      
+  #systemctl restart mysqld
