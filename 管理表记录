@@ -133,15 +133,3 @@
            
            select * from user limit 3;        //显示查询结果前3条记录
            select * from user limit 3,3;      //从第4条开始，共显示3条
-
-
-
-
-
-
-
-
-
-
-
-
