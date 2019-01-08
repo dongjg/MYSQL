@@ -46,4 +46,18 @@
           add
           id int primary key auto_increment;
           
-    
+3、数据导出
+  定义：把表记录导出到系统文件里
+  语法：
+      SQL查询 into outfile "目录名/文件名";
+      可选参数：
+      fields terminated by "分隔符"
+      lines terminated by "\n";
+      
+   注意事项：
+      -导出的内容由SQL查询语句决定
+      -导出的表中的记录不包括字段名
+      -禁用Selinux
+      
+    mysql>select * from user where uid<100 limit 10 
+          into outfile "/mydir/user1";
