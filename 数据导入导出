@@ -1,0 +1,49 @@
+1、数据导入导出默认目录： /var/lib/mysql-files/
+
+  查询默认使用目录：
+    mysql>show variables like "secure_file_priv"
+
+  可以自定义数据导出目录
+    #mkdir /mydir
+    #vim /etc/my.cnf
+      [mysqld]
+      secure_file_priv="/mydir"
+    
+   修改目录的权限：  
+     #chown mysql /mydir
+   重启服务：
+     #systemctl restart mysqld
+     
+2、数据导入
+  基本语法： 
+    load data infile "目录名/文件名" into table 表名 
+    fields terminated by "分隔符"
+    lines terminated by "\n";
+    
+    分隔符:与文件中的分隔符一致
+    导入文件：必须写绝对路径
+    导入数据的表字段类型要与文件字段匹配
+    禁用Selinux保护机制
+    
+  执行系统命令：
+    mysql>system cp /etc/passwd /mydir
+    mysql>system ls /mydir
+    
+  创建数据表：
+    mysql>create database userdb;
+    mysql>create table userdb.user(
+          name char(30),
+          password char(1),
+          uid int,
+          gid int,
+          comment char(150),
+          homedir char(150),
+          shell char(50),
+          index(name)
+          );
+  添加序号列并设置主键：
+    mysql>alter table userdb.user 
+          add
+          id int primary key auto_increment;
+          
+    
