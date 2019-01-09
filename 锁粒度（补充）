@@ -1,0 +1,38 @@
+锁策略：就是在锁开销和数据安全之间寻求一种平衡，这种平衡也会影响系统性能
+      表锁：开销最小的锁策略，
+           当用户对表进行写操作时，就获得一个写锁。写锁会禁止其他任何用户的读/写操作。
+           写锁优先级高于读锁。
+      行锁：支持最大的并发处理，同时也会带来最大的锁开销。
+           其中Innodb和Falcon存储引擎支持行锁
+           
+死锁：指两个或多个事务在同一资源上互相占用，并请求加锁时，而导致的恶性循环现象。当多个事务
+     以不同顺序试图加锁同一资源时，就会产生死锁。
+     Innodb处理死锁的方法是，回滚拥有最少排它锁行级锁的事务。
+     
+     Innodb使用二相锁定协议。一个事务在执行过程中任何时候，都可以获得锁，但只有执行commit和
+            rollback语句后，才可以释放这些锁。
+            
+      以上的锁定机制都是隐式锁，由存储引擎实现的。
+      
+      Innodb也支持显锁，由MySQL服务器实现的。
+          select ... lock in share mode;
+          select ... for update;
+          
+多版本并发控制（MVCC）
+    Innodb通过为每个数据增加两个隐含值的方式俩实现MVCC。这两个隐含值记录行的创建时间和过期时间
+    
+事务处理的标准：原子性、一致性、隔离性、持久性
+    autocommit（自动提交）
+        show variables like "autocommit";
+        set autocommit 1;       //1=on,0=off
+        设置隔离级：
+            set session transaction isolation level read commited;
+            
+隔离级：低级别的隔离级一般支持更高的并发处理，并拥有更低的系统开销
+      read uncommited(读取未提交内容)  所有事务都可以“看到”未提交事务的执行结果
+      read commited(读取提交内容) 
+      repeatable read(可重读)
+      serializable(可串行化)
+     
+
+     
