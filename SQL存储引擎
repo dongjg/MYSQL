@@ -1,10 +1,65 @@
-show engines;       //查看数据库支持的引擎
-show create table 表名;         //查看建表的命令
-show table status like 'user'\G;  //查看user表的状态信息
+  show engines;       //查看数据库支持的引擎
+  show create table 表名;         //查看建表的命令
+  show table status like 'user'\G;  //查看user表的状态信息
 
-修改数据库服务默认引擎：
-  #vim /etc/my.cnf
+  修改数据库服务默认引擎：
+    #vim /etc/my.cnf
       [mysqld]
-      default-storage-engine=muisam
+      default-storage-engine=myisam
       
-  #systemctl restart mysqld
+    #systemctl restart mysqld
+一、
+  1、存储引擎特点
+      MYISAM：
+             -支持表级锁，---> 适合查询操作多的表，节省系统资源
+             -不支持事务、事务回滚、外键
+             
+             表名.frm：存放表结构   desc 表名
+             表名.MYI：存放索引     show index from 表名
+             表名.MYD：存放表记录    select 
+      INNODB：
+             -支持行级锁，---> 适合写(update、insert、delete)操作多的表
+             -支持事务、事务回滚、外键
+             
+             表名.frm：存放表结构   desc 表名
+             表名.idb：存放索引和表记录
+             事务日志文件： 
+                        ib_logfile0:成功执行的，提交过的
+                        ib_logfile1:成功执行的，提交过的
+                        ibtmp1:未提交过的SQL命令
+                        
+      创建表时指定使用某一存储引擎：
+            mysql>show engines;
+            mysql>create table t3(age int) engine=memory;
+      修改表使用的存储引擎：
+            mysql>alter table t3 engine=innodb;
+            
+  2、锁机制
+        锁粒度：
+              -表级锁：一次直接对整张表进行加锁
+              -行级锁：只锁定某一行
+              -页级锁：对内存中的数据进行加锁，最小单位：页（1页=1M）
+        锁类型：
+              -读锁(共享锁)：支持并发读
+              -写锁(排它锁)：是独占锁，上锁期间其他线程不能读表或写表
+              
+              查看当前锁状态：
+                  mysql>show status like "tabel_lock%";
+  
+  3、事务：即一次SQL操作从开始连接到结束的过程
+     事务回滚：在事务执行过程中，任意一步操作失败，恢复之前所有的操作。
+     
+     事务日志文件：记录所有INNODB引擎执行的SQL命令
+     
+     事务特性(ACID)：
+                   Atomic(原子性)：事务的整个操作是一个整体，不可分隔，要么全部成功，要么全部失败。
+                   Consistency(一致性)：事务操作的前后，表中的记录没有变化
+                   Isolation(隔离性)：事务操作是相互隔离不受影响
+                   Durability(持久性)：数据一但提交，不可改变，永久改变表数据
+                   
+                   mysql>show variables like "autocommit";      //查看提交状态
+                   mysql>set autocommit=on/off;                 //开启/关闭提交状态
+                   mysql>rollback;                              //数据回滚
+                   mysql>commit;                                //提交数据
+二、
+三、
