@@ -16,5 +16,26 @@
             
   2、select 字段名列表 from 表a,表b where 条件;
     
-  3、
-  4、
+  3、where子表查询
+        -把内层查询结果作为外层查询的查询条件
+           语法：
+                select 字段名列表 from 表名
+                where 条件
+                
+         mysql>select name from userdb.user
+             ->where name in
+             ->(select user from mysql.user where host="localhost" and user="root");
+             
+  4、左连接查询
+        -查询条件成立时，以左边的表为主显示查询结果
+        语法：select 字段名列表 from 表a left join 表b on 条件表达式;
+        
+        mysql>select * form t3 left join t4 on t3.name=t4.name and t3.uid=t4.uid;
+             
+  5、右连接查询
+        -查询条件成立时，以右边的表为主显示查询结果
+        语法：select 字段名列表 from 表a right join 表b on 条件表达式;
+        
+        mysql>select * from t3 right join t4 on t3.name=t4.name and t3.uid=t4.uid;
+        
+        
