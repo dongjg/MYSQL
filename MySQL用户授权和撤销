@@ -1,0 +1,34 @@
+一、用户授权：在数据库服务器上添加连接服务的用户
+  默认只有数据库管理员在本机登陆才有授权权限
+  
+  1、设置管理员密码
+    #mysqladmin -hlocalhost -uroot -p password "新密码"
+    Enter password://输入旧密码
+    
+  2、恢复操作过程
+    #vim /etc/my.cnf
+      [mysqld]
+      ......
+      skip-grant-tables
+      
+    #systemctl restart mysqld
+    #mysql
+    mysql>update mysql.user set authentication_string=password("123qqq...A")
+        ->where
+        ->user="root" and host="localhost";
+    mysql>flush privileges;
+    mysql>quit
+    
+二、MySQL授权库和表信息
+  1、授权库myslq，主要的几个表：
+    -user表，存储授权用户的访问权限
+    -db表，存储授权用户对数据库的访问权限
+    -tables_priv表，存储授权用户对表的访问权限
+    -columns_priv表，存储授权用户对字段的访问权限
+    
+  2、grant配置授权
+      用法：grant 权限列表.... on 库表.表名
+           to 用户名@'客户端地址'
+           identified by '密码'
+           [with grant option];   -->是否有授权权限
+    
