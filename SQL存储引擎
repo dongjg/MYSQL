@@ -61,5 +61,3 @@
                    mysql>set autocommit=on/off;                 //开启/关闭提交状态
                    mysql>rollback;                              //数据回滚
                    mysql>commit;                                //提交数据
-二、
-三、
