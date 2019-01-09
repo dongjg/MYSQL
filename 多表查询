@@ -1,0 +1,20 @@
+一、复制表
+    -备份表
+    -快速建表
+    
+    语法格式：
+            mysql>create table y select * from x;     //将源表x复制为新表y，不会复制键值
+            mysql>create tabel y SQL查询语句;          //将指定的查询结果复制为新表y
+            
+            mysql>create table a select * from x where false;   //复制源表x的表结构到新表a
+            mysql>alter table a rename to b;                    //将源表a名称改为b
+            
+二、多表查询
+  1、select 字段名列名 from 表a,表b;      //查询结果叫笛卡尔积  
+          查询结果的总条目数是 = （表a的记录数 x 表b的记录数）
+            mysql>select t1.name,t2.* from t1,t2;
+            
+  2、select 字段名列表 from 表a,表b where 条件;
+    
+  3、
+  4、
