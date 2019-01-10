@@ -1,0 +1,32 @@
+一、数据备份策略
+  -完全备份：备份所有数据
+  -增量备份：备份上次备份后，所有新产生的数据
+  -差异备份：备份完全备份后，所有新产生的数据
+  
+二、逻辑备份
+  -备份操作：
+            #mysqldump -uroot -p密码 库名 > 路径/xxx.sql
+            
+            库名表示方法：
+                        --all-databases 或 -A   表示所有库
+                        数据库名                 表示单个库
+                        数据库名 表名             表示单张表
+                        -B 数据库1 数据库2        表示多个库
+            #mysql -uroot -p123qqq...A -A > /dbbak/full.sql       //备份所有
+            #mysql -uroot -p123qqq...A db4 > /dbbak/db4.sql       //备份db4库
+                        
+  -恢复操作：
+            #mysql -uroot -p密码 库名 < 路径/xxx.sql
+            
+            #mysql -uroot -p123qqq...A < /dbbak/userdb
+            
+三、数据增量备份与恢复
+  1、实时增量备份与恢复
+    -启用mysql服务的binlog日志文件实现的
+      binlog日志(二进制日志)：记录所有更改数据的操作
+        配置：/etc/my.cnf
+            server_id=50    //设备id范围1～255
+            log-bin 或者指定存储路径 log_bin=/logdir/lfx
+            
+            #chown mysql /logdir
+           
