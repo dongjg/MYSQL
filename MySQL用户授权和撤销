@@ -27,8 +27,45 @@
     -columns_priv表，存储授权用户对字段的访问权限
     
   2、grant配置授权
-      用法：grant 权限列表.... on 库表.表名
+      用法：grant 权限列表... on 库表.表名
            to 用户名@'客户端地址'
            identified by '密码'
            [with grant option];   -->是否有授权权限
-    
+           
+           all:代表所有权限
+           *.*:代表所有库所有表
+      mysql>select @@hostname;    //显示当前访问数据库服务的主机名
+      mysql>select user();        //显示当前登陆用户的用户名和客户端
+      mysql>show grants;          //显示当前用户具有的权限
+      
+      客户端地址
+          %：匹配所有主机
+          192.168.4.%：匹配一个网段
+          
+  3、显示授权信息
+      mysql>show grants for "mysql.sys"@"localhost";
+      
+      mysql>select * from mysql.db where db="sys";   //查询用户对数据库sys的权限
+      mysql>select * from mysql.tables_priv where db="db4" and Table_name="t1"   //查看用户对数据表t1的权限
+      mysql>select * from mysql.columns_priv
+      
+      mysql>grant select,insert,update(name,uid) on userdb.user to yaya@'192.168.4.%' identified by "123qqq...A"
+          ->with grant option;
+      mysql>grant insert on mysql.* to yaya@"192.168.4.%";    //yaya拥有授权权限，但其授权的权限在其拥有的权限之内
+      
+  4、重设用户密码
+      授权用户连接后修改密码：
+            mysql>set password = password("新密码");
+      管理员重置授权用户连接密码：
+            mysql>set password for 用户名@'客户端地址'=password("新密码");
+            
+  5、撤销用户授权
+      用法：
+          mysql>revoke 权限列表 on 库名.表名 from 用户名@'客户端地址';
+          
+          mysql>revoke grant option on *.* from root@'192.168.4.51';  //撤销授权权限
+          mysql>revoke delete,update on *.* from root@'192.168.4.51'; //撤销某个权限
+          
+      删除授权时的用户名：
+        mysql>drop user root@'192.1688.4.51';
+           
