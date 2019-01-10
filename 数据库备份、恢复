@@ -29,4 +29,40 @@
             log-bin 或者指定存储路径 log_bin=/logdir/lfx
             
             #chown mysql /logdir
-           
+     -查看日志当前记录格式
+        mysql>show variables like "binlog_format"
+        
+        三种记录格式：
+          statement：每一条修改数据的SQL命令都会记录在binlog日志中
+          row:不记录SQL语句上下文相关信息，仅保存哪条记录被修改
+          mixed:是以上两种格式的混合使用
+          
+          
+          
+          
+          
+     -手动生成新的日志文件几种方法：
+            默认日志文件大小500M,超过500M就会自动创建新的日志文件 
+            1、重启mysql服务
+            2、执行SQL操作 mysql>flush logs;
+            3、完全备份后，生成日志。 
+                #mysqldump -uroot -p123qqq...A --flush-logs db5>/dbbak/allbak.sql
+            4、#mysql -uroot -p密码 -e 'flush logs'
+     -清除binlog日志
+        删除遭遇指定版本的binlog日志
+          mysql>purge master logs to "binlog文件名";
+        删除所有binlog日志，重建新日志
+          mysql>set master;
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
