@@ -171,6 +171,8 @@
           #innobackupex --user root --password 123qqq...A --apply-log --export /db5bak
        -创建删除的表（要和原来的表结构一致）
           #create table ...
+       -删除表空间
+          mysql>alter table db5.b discard tablespace
        -将导出的表信息拷贝到数据库目录下并修改权限
           #cp /db5bak/db5/b.{cfg,exp,ibd} /var/lib/mysql/db5
           #chown -R mysql:mysql /var/lib/mysql/db5/b.*
