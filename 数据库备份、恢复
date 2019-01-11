@@ -70,9 +70,13 @@
      
      -使用日志恢复数据
           binlog日志文件记录多条SQL命令时，如何区分记录的多条SQL命令？
+          
               -偏移量
                 mysql>show master status;   //显示当前数据库服务使用的日志文件和记录SQL命令偏移量
+                mysql>show master logs;     //查看所有binlog日志列表
+              
               -时间点
+              
           格式：
               #mysqlbinlog [选项] binlog日志文件名
               选项：
