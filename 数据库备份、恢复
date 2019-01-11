@@ -12,18 +12,21 @@
                         数据库名                 表示单个库
                         数据库名 表名             表示单张表
                         -B 数据库1 数据库2        表示多个库
-            #mysql -uroot -p123qqq...A -A > /dbbak/full.sql       //备份所有
-            #mysql -uroot -p123qqq...A db4 > /dbbak/db4.sql       //备份db4库
+            #mysqldump -uroot -p123qqq...A -A > /dbbak/full.sql       //备份所有
+            #mysqldump -uroot -p123qqq...A db4 > /dbbak/db4.sql       //备份db4库
                         
   -恢复操作：
             #mysql -uroot -p密码 库名 < 路径/xxx.sql
             
             #mysql -uroot -p123qqq...A < /dbbak/userdb
             
-三、数据增量备份与恢复
+三、数据备份与恢复
+
   1、实时增量备份与恢复
     -启用mysql服务的binlog日志文件实现的
-      binlog日志(二进制日志)：记录所有更改数据的操作(除查询之外)
+    
+      binlog日志(二进制日志)：mysql服务日志文件的一种，记录所有更改数据的操作(除查询之外)
+      
       默认路径：/var/lib/mysql
         配置：/etc/my.cnf
             server_id=50    //设备id范围1～255
@@ -44,8 +47,8 @@
           row:不记录SQL语句上下文相关信息，仅保存哪条记录被修改
           mixed:是以上两种格式的混合使用
           
-     -分析binlog日志
-        格式：#mysqlbinlog [选项] binlog日志文件名
+     -查看binlog日志
+        格式：#mysqlbinlog binlog日志文件名
                 选项：
                     --start-datetime ="yyyy-mm-dd hh:mm:ss"
                     --stop-datetime  ="yyyy-mm-dd hh:mm:ss"\
@@ -64,3 +67,91 @@
             mysql>purge master logs to "binlog文件名";
           删除所有binlog日志，重建新日志
             mysql>set master;
+     
+     -使用日志恢复数据
+          binlog日志文件记录多条SQL命令时，如何区分记录的多条SQL命令？
+              -偏移量
+                mysql>show master status;   //显示当前数据库服务使用的日志文件和记录SQL命令偏移量
+              -时间点
+          格式：
+              #mysqlbinlog [选项] binlog日志文件名
+              选项：
+                    --start-datetime ="yyyy-mm-dd hh:mm:ss"
+                    --stop-datetime  ="yyyy-mm-dd hh:mm:ss"
+                    --start-position =数字      //数字=偏移量
+                    --stop-position  =数字      //数字=偏移量
+              
+              #mysqlbinlog --start-position=数字 /logdir/plj000003
+              #mysqlbinlog --stop-position=数字 /logdir/plj000003
+              #mysqlbinlog --start-position=数字 --stop-position=数字 /logdir/plj000003
+              
+              恢复操作：
+                      #mysqlbinlog [选项] /logdir/plj000001 | mysql -uroot -p123qqq...A
+                      
+  2、innobackupex备份和恢复
+    -一款强大的在线热备份工具
+        *备份过程中不锁表，适合生产环境
+        *主要含有两个组件
+          -xtrabackup:C程序，支持InnoDB/XtraDB,是增量备份
+          -innobackupex:以Perl脚本封装xtrabackup,支持InnoDB的增量备份；同时还支持MyISAM,但MyISAM引擎的数据还是全备，不支持增量备份。
+    -安装软件包
+      -依赖包
+        #yum -y install perl-Digest-MD5 rsync perl-DBD-MySQL
+        #rpm -ivh libev-4.15...
+        #rpm -ivh percona-xtrabackup-24...
+    -备份
+        #innobackupex --user root --password 123qqq...A /allbak --no-timestamp
+            /allbak    备份数据存放文件目录，自动生成
+          选项：
+            --no-timestamp  不用日期命名备份文件存储额子目录名
+            --host          主机名
+            --user          用户名
+            --port          端口号3306
+            --password      密码
+            --databases     数据库名
+                   --databases="库名"
+                   --databases="库1 库2"
+                   --databases="库.表"
+            --redo-only                         //日志合并
+            --apply-log                         //准备还原
+            --copy-back                         //恢复数据
+            --incremental 目录名                 //增量备份
+            --incremental-basedir=目录名         //增量备份时，指定上一次备份数据存储的目录名
+            --incremental-dir=目录名             //准备恢复数据时，指定增量备份数据的存储过程
+            --export                            //导入表信息
+            import                              //导入表空间
+    -恢复
+        -恢复之前必须先停服
+            #systemctl stop mysqld
+        -准备恢复数据
+            #innobackupex --apply-log /allbak
+        -把备份文件拷贝到数据库目录下
+            #rm -rf /var/lib/mysql/*      //拷贝之前必须清空，否则报错 
+            #innobackupex --copy-back /allbak
+        -修改数据库目录的权限
+            #chown -R mysql:mysql /var/lib/mysql
+        -启动服务
+            #systemctl start mysqld
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
