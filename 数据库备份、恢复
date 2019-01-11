@@ -99,8 +99,8 @@
         #yum -y install perl-Digest-MD5 rsync perl-DBD-MySQL
         #rpm -ivh libev-4.15...
         #rpm -ivh percona-xtrabackup-24...
-    -备份
-        #innobackupex --user root --password 123qqq...A /allbak --no-timestamp
+    -完全备份
+        #innobackupex --user root --password 123qqq...A /allbak --no-timestamp  //完全备份
             /allbak    备份数据存放文件目录，自动生成
           选项：
             --no-timestamp  不用日期命名备份文件存储额子目录名
@@ -120,38 +120,60 @@
             --incremental-dir=目录名             //准备恢复数据时，指定增量备份数据的存储过程
             --export                            //导入表信息
             import                              //导入表空间
-    -恢复
+    -完全恢复
         -恢复之前必须先停服
             #systemctl stop mysqld
         -准备恢复数据
             #innobackupex --apply-log /allbak
         -把备份文件拷贝到数据库目录下
-            #rm -rf /var/lib/mysql/*      //拷贝之前必须清空，否则报错 
+            #rm -rf /var/lib/mysql/*      //拷贝之前必须清空数据库目录，否则报错 
             #innobackupex --copy-back /allbak
         -修改数据库目录的权限
             #chown -R mysql:mysql /var/lib/mysql
         -启动服务
             #systemctl start mysqld
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            
+    -增量备份
+        #innobackupex --user root --password 123qqq...A /fullbak --no-timestamp  //完全备份
+        
+        #innobackupex --user root --password 123qqq...A --databases="库列表名" /xxbak --no-timestamp   //指定库备份
+        
+        #innobackupex --user root --password 123qqq...A --incremental /new1 \
+          --incremental-basedir=/fullbak --no-timestamp       //第一次增量备份
+        #innobackupex --user root --password 123qqq...A --incremental /user2 \
+          --incremental-basedir=/new1 --no-timestamp          //第二次备份
+          
+    -增量恢复数据
+        -停服
+            #systemctl stop mysqld
+        -准备恢复数据
+            #innobackupex --apply-log --redo-only /fullbak
+        -合并日志
+            #innobackupex --apply-log --redo-only /fullbak --incremental-dir=/new1
+            #innobackupex --apply-log --redo-only /fullbak --incremental-dir=/new2
+                  //合并日志，把新产生的增量备份数据合并到完全备份中
+        -把备份文件拷贝回数据库目录下
+            #rm -rf /var/log/mysql/*
+            #innobackupex --copy-back /fullbak
+        -修改权限
+            #chown -R mysql:mysql /var/lib/mysql
+        -启服
+            #systemctl start mysqld
+        -再次执行增量备份
+            #innobackupex --user root --password 123qqq...A --incremental /dir1 \
+              --incremental-basedir=/fullbak --no-timestamp
+              
+    -在完全备份文件中恢复单个表
+       -完全备份
+          #innobackupex --user root --password 123qqq...A /fullbak --no-timestamp
+          
+       -导出表信息
+          #innobackupex --user root --password 123qqq...A --apply-log --export /db5bak
+       -创建删除的表（要和原来的表结构一致）
+          #create table ...
+       -将导出的表信息拷贝到数据库目录下并修改权限
+          #cp /db5bak/db5/b.{cfg,exp,ibd} /var/lib/mysql/db5
+          #chown -R mysql:mysql /var/lib/mysql/db5/b.*
+       -导入表信息
+          mysql>alter table db5.b import tablespace;
+ 
