@@ -1,0 +1,68 @@
+一、主从同步原理
+    Master：记录数据更改操作
+           -启用binlog日志        log_bin
+           -设置binlog日志格式     binlog_format
+           -设置server_id         server_id=51
+           
+    Slave运行2个线程：
+           -IO：复制master主机binlog日志文件里的SQL到本机的relay-log文件里
+                  中继日志relay-log
+           -SQL:执行本机relay-log文件里的SQL语句，重现Master的数据操作
+           
+二、配置主服务器
+  1、修改配置文件
+      -启用binlog日志        log_bin=master51
+      -设置binlog日志格式     binlog_format="mixed"
+      -设置server_id         server_id=51
+  2、授权用户
+      -允许从库访问
+      -对所有库具有同步权限
+        mysql>grant replication slave on *.* to 用户名@'从库ip地址' identified by '密码'
+      
+        mysql>grant replication slave on *.* to repluser@'192.168.4.52' identified by "123qqq...A";
+      
+      查看Master状态
+        mysql>show master status;
+        
+三、配置从服务器
+  1、修改配置文件
+    server_id=52
+  2、指定主库信息（管理员身份登陆指定）
+    mysql>change master to
+        ->master_host='192.168.4.51',           //主库ip地址
+        ->master_user='root',                   //主库授权用户名
+        ->master_password='123qqq...A',         //授权用户密码
+        ->master_log_file='master51.000001',    //日志文件
+        ->master_log_pos='448';                 //偏移位置
+        
+    mysql>start slave;                          //启动slave进程
+    mysql>stop slave;
+    
+四、测试配置
+  客户端授权：
+    mysql>grant all on gamedb.* to webuser@'%' identified by '123qqq...A';
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /var/lib/mysql/auto.cnf 文件存放数据库服务的UUID 
