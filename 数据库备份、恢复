@@ -43,8 +43,8 @@
           #systemctl restart mysqld
           
         三种记录格式：
-          statement：每一条修改数据的SQL命令都会记录在binlog日志中
-          row:不记录SQL语句上下文相关信息，仅保存哪条记录被修改
+          row:不记录SQL语句上下文相关信息，仅保存哪条记录被修改，修改成什么样子
+          statement：每一条修改数据的SQL命令都会记录在binlog日志中,只记录执行修改操作的SQL语句
           mixed:是以上两种格式的混合使用
           
      -查看binlog日志
