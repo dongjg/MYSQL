@@ -38,31 +38,10 @@
     mysql>start slave;                          //启动slave进程
     mysql>stop slave;
     
+  /var/lib/mysql/auto.cnf 文件存放数据库服务的UUID
+  
 四、测试配置
   客户端授权：
     mysql>grant all on gamedb.* to webuser@'%' identified by '123qqq...A';
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /var/lib/mysql/auto.cnf 文件存放数据库服务的UUID 
+
+     
