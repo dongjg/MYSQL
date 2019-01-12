@@ -43,5 +43,32 @@
 四、测试配置
   客户端授权：
     mysql>grant all on gamedb.* to webuser@'%' identified by '123qqq...A';
-
+五、删除主从服务器
+    从服务器上相关文件：
+        master.info                 //主库信息
+        relay_log.info              //中继日志信息
+        主机名-relay-bin.xxxxx       //中继日志
+        主机名-relay-bin.index       //索引文件
+        
+    取消主从关系，从服务器删除/var/lib/mysql目录下的相关文件（以上文件）
+    重启数据库服务
+    
+ 六、
+    mysql>source /root/a.sql 等同于 #mysql -uroot -p123456 gamedb < /root/a.sql
+    
+    1、常用配置选项
+        主库配置选项：
+                    binlog_do_db=库名         //允许从库同步哪个库
+                    binlog_ignore_db=库名     //不允许从库同步哪个库
+        从库配置选项：
+                    log_slave_update            //允许链式复制（主从从模式）
+                    relay_log=dbsvr2-relat-bin  //指定中继日志文件名
+                    replication_do_db=库名      //允许从库同步指定库
+                    replication_ignore_db=库名    //不允许从库同步指定库
+    
+    
+    
+    
+    
+    
      
