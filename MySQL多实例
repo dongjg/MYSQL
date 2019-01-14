@@ -1,0 +1,43 @@
+多实例：指在一台物理机上运行多个数据库服务
+    优点：
+        -节约运维成本
+        -提高硬件利用率
+        
+一、安装支持多实例的软件包
+  1、解压软件、修改目录名
+    # cd mysql/
+    # tar -xf mysql-5.7.20-linux-glibc2.12-x86_64.tar.gz
+    # mv mysql-5.7.20-linux-glibc2.12-x86_64 /usr/local/mysql
+  2、调整PATH变量
+    # echo  "export  PATH=/usr/local/mysql/bin:$PATH" >> /etc/profile
+    # source /etc/profile
+    # echo $PATH
+        /usr/local/mysql/bin:/usr/local/mycat/bin:/usr/local/mycat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/root/bin
+  3、编辑主配置文件/etc/my.cnf
+    每个实例必须要有独立的数据库目录、监听端口号、实例名称和独立的sock文件
+      [mysqld_multi]                                    //启用多实例
+      mysqld = /usr/local/mysql/bin/mysqld_safe         //指定进程文件路径
+      mysqladmin = /usr/local/mysql/bin/mysqladmin      //指定管理命令路径
+      user = root                                       //指定进程用户
+      
+      [mysqld1]                                         //实例进程名称（编号）
+      port=3307                                         //端口号
+      datadir=/data3307                                 //数据库目录 ，要手动创建
+      socket=/data3307/mysqld.sock                      //指定sock文件的路径和名称
+      pid-file=/data3307/mysql1.pid                     //进程pid号文件位置
+      log-error=/data3307/mysql1.err                    //错误日志位置 
+      
+      [mysqld2]
+      port=3308
+      datadir=/data3308
+      socket=/data3308/mysqld.sock
+      pid-file=/data3308/mysql2.pid
+      log-error=/data3308/mysql2.err 
+  4、创建进程运行的所有者和组
+    # useradd mysql
+    # chown  mysql:mysql  /data*
+  5、初始化授权库
+    # mysqld --user=mysql --basedir=/usr/local/mysql --datadir=/data3307 --initialize 或者
+    # mysqld_multi start 实例编号
+    # mysqld_multi --user=root --password=密码 stop 实例编号
+     
