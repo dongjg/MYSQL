@@ -9,3 +9,188 @@
         -也可以部署爱一台slave节点上
       MHA Node（数据节点）
         -运行在每台MySQL服务器上
+        
+二、实现此案例需要按照如下步骤进行
+
+  步骤一：配置mha集群环境
+    1、安装数据库
+      # cd /root/mysql
+      # tar -xf mysql-5.7.17.tar
+      # yum -y install perl-JSON
+      # rpm -Uvh mysql-community-*.rpm
+      # rpm -qa | grep  -i mysql
+      
+    2、master51 数据库服务器配置文件
+      # vim /etc/my.cnf
+        plugin-load = "rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+        rpl-semi-sync-master-enabled = 1
+        rpl-semi-sync-slave-enabled = 1
+        server_id=51
+        log-bin=master51
+        binlog-relay_log_purge=off;  //不自动删除本机的中继日志文件format="mixed"
+        
+        # systemctl  restart  mysqld
+        # mysql -u root -p123qqq...A
+        mysql>  grant  replication slave  on  *.*  to repluser@"%"  identified by "123qqq...A";   //添加主从同步授权用户
+    
+    3、master52数据库服务器配置文件
+        # vim /etc/my.cnf
+          plugin-load ="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+          rpl-semi-sync-master-enabled = 1
+          rpl-semi-sync-slave-enabled = 1
+          server_id=52
+          log-bin=master52
+          binlog-format="mixed"
+          binlog-relay_log_purge=off;
+          
+        # systemctl  restart  mysqld
+        # mysql -u root -p123qqq...A
+          mysql> change master to 
+              -> master_host="192.168.4.51",
+              -> master_user="repluser",
+              -> master_password="123qqq...A",
+              -> master_log_file="master51.000003",
+              -> master_log_pos=441;
+
+    4、master53数据库服务器配置文件
+        # vim /etc/my.cnf
+          plugin-load ="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+          rpl-semi-sync-master-enabled = 1
+          rpl-semi-sync-slave-enabled = 1
+          server_id=53
+          log-bin=master53
+          binlog-format="mixed"
+          binlog-relay_log_purge=off;
+          
+      # systemctl  restart  mysqld
+      # mysql -u root -p123qqq...A
+        mysql> change master to
+            -> master_host="192.168.4.51",
+            -> master_user="repluser",
+            ->  master_password="123qqq...A",
+            -> master_log_file="master51.000003",
+            ->  master_log_pos=441;
+
+        mysql> show slave status\G;
+
+    5、slave54 数据库服务器配置文件
+      # vim /etc/my.cnf
+        server_id=54
+        
+      # systemctl  restart  mysqld
+      # mysql -u root -p123456
+          mysql> change master to
+              -> master_host="192.168.4.51",
+              -> master_user="repluser",
+              -> master_password="123qqq...A",
+              -> master_log_file="master51.000003",
+              ->  master_log_pos=441;
+
+          mysql> show slave status\G;
+
+    6、slave55 数据库服务器配置文件
+        # vim /etc/my.cnf
+          server_id=55
+        # systemctl  restart  mysqld
+        # mysql -u root -p123456
+          mysql> change master to
+              -> master_host="192.168.4.51",
+              -> master_user="repluser",
+              -> master_password="123qqq...A",
+              -> master_log_file="master51.000003",
+              -> master_log_pos=441;
+
+    7、配置管理主机4.56
+      # cd mysql/mha-soft-student/mha4mysql-manager-0.56/
+      # mkdir /etc/mha    //创建工作目录
+      # cp samples/conf/app1.cnf  /etc/mha    //建立样板文件 
+      # vim /etc/mha/app1.cnf 
+        //编辑主配置文件app1.cnf
+        [server default]
+        manager_workdir=/etc/mha
+        manager_log=/etc/mha/manager.log
+        master_ip_failover_script=/etc/mha/master_ip_failover
+        
+        ssh_user=root
+        ssh_port=22
+        
+        repl_user=repluser
+        repl_password=123qqq...A
+        
+        user=root
+        password=123qqq...A
+        
+        [server1]
+        hostname=192.168.4.51    
+        port=3306
+        candidate_master=1
+        
+        [server2]
+        hostname=192.168.4.52
+        port=3306            
+        candidate_master=1
+        
+        [server3]
+        hostname=192.168.4.53
+        port=3306
+        candidate_master=1
+        
+        [server4]
+        hostname=192.168.4.54
+        no_master=1
+        
+        [server5]
+        hostname=192.168.4.55
+        no_master=1
+        
+      # cp samples/scripts/master_ip_failover /etc/mha/        //创建故障切换的脚本
+      
+三、测试MHA集群
+  1、检查配置环境，在主机52、53检查是否有同步数据的用户repluser
+    主机52:
+        mysql> select user,host from mysql.user where user="repluser";
+        mysql> show grants for repluser@"%";
+    主机53:
+        mysql> select user,host from mysql.user where user="repluser";
+        mysql> show grants for repluser@"%";
+
+  2、在51的主机上做root的授权，其他的会同步（如果不做，在验证数据节点的主从同步配置时会出错）
+        mysql> grant all on *.* to root@"%" identified by "123456";
+        mysql> select user,host from mysql.user where user="root";
+
+  3、验证ssh 免密登陆数据节点主机
+      # masterha_check_ssh  --conf=/etc/mha_manager/app1.cnf
+
+  4、验证数据节点的主从同步配置（先把自动failover时候的切换脚本注释掉）
+      # masterha_check_repl --conf=/etc/mha_manager/app1.cnf
+
+  5、启动管理服务MHA_Manager
+      选项：
+        --remove_dead_master_conf	//删除宕机主库配置
+        --ignore_last_failover //忽略xxx.health文件
+      # masterha_manager --conf=/etc/mha_manager/app1.cnf --remove_dead_master_conf --ignore_last_failover 
+
+  6、查看状态（另开一个终端）
+      # masterha_check_status --conf=/etc/mha_manager/app1.cnf
+
+  7、停止服务
+      # masterha_stop  --conf=/etc/mha_manager/app1.cnf
+
+四、测试故障转移
+  宕掉Master数据库服务器：
+
+  1、在主库51上面配置VIP地址
+      # ifconfig eth0:1 192.168.4.100/24
+  2、在配置文件里面把自动failover时候的切换脚本去掉注释
+  3、修改 master_ip_failover 脚本，设置如下内容
+      my $vip = '192.168.4.100/24'; 
+      my $key = "1";
+      my $ssh_start_vip = "/sbin/ifconfig eth0:$key $vip";
+      my $ssh_stop_vip = "/sbin/ifconfig eth0:$key down";
+  4、启动服务
+      # masterha_manager --conf=/etc/mha_manager/app1.cnf --remove_dead_master_conf --ignore_last_failover
+
+  5、查看状态
+      # masterha_check_status  --conf=/etc/mha_manager/app1.cnf
+      # masterha_check_repl --conf=/etc/mha_manager/app1.cnf 
+
