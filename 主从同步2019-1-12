@@ -11,9 +11,10 @@
            
 二、配置主服务器
   1、修改配置文件
-      -启用binlog日志        log_bin=master51
-      -设置binlog日志格式     binlog_format="mixed"
-      -设置server_id         server_id=51
+      -启用binlog日志           log_bin=master51
+      -设置binlog日志格式        binlog_format="mixed"
+      -设置server_id            server_id=51
+      -定义binlog日志文件大小     max_binlog_size=
   2、授权用户
       -允许从库访问
       -对所有库具有同步权限
