@@ -105,9 +105,24 @@ alter table db1.a discard tablespace;         //删除表空间
 
 alter table db1.a import tablespace;          //导出表信息
 
+mysql>grant replication slave on *.* to 用户名@‘从库ip地址’ identified by '密码';   //授权用户，允许所有库有同步权限
 
+show master status;
 
+show slave status;
 
+mysql> CHANGE MASTER TO MASTER_HOST='主库ip地址',
+    -> MASTER_USER='授权用户名',
+    -> MASTER_PASSWORD='授权密码',
+    -> MASTER_LOG_FILE='Master的日志文件',  
+    -> MASTER_LOG_POS=日志偏移量;             
+mysql>start slave;
+
+master.info               //主库信息
+
+relay-log.info            //中继日志
+
+主机名-relay-bin.index     //索引文件
 
 
 
