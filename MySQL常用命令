@@ -151,7 +151,10 @@ plugin-load="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisyn
 rpl_semi_sync_master_enabled=1
 rpl_semi_sync_slave_enabled=1
 
+读写分离
+mysql>grant replication slave,replication client on *.* to scalemon@'%' identified by "123qqq...A"    //创建监控用户
 
+mysql>grant select mysql.* to maxscale@'%' identified by "123qqq...A";    //创建路由用户
 
 
 
