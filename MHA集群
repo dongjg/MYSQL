@@ -126,15 +126,15 @@
         [server default]
         manager_workdir=/etc/mha
         manager_log=/etc/mha/manager.log
-        master_ip_failover_script=/etc/mha/master_ip_failover
+        master_ip_failover_script=/etc/mha/master_ip_failover     //自动failover的切换脚本
         
         ssh_user=root
         ssh_port=22
         
-        repl_user=repluser
+        repl_user=repluser            //主从同步
         repl_password=123qqq...A
         
-        user=root
+        user=root                     //数据库用户
         password=123qqq...A
         
         [server1]
