@@ -70,19 +70,40 @@ innobackupex基本选项
   --incremental-dir=目录名         //准备恢复数据时，指定增量备份数据存储的目录名
   --export                        //导出表信息
   import                          //导入表空间
-  
+
+完全备份与恢复
 innobackupex --user root --password 123qqq...A /bak --no-timestamp      //完全备份
 
 innobackupex --user root --password 123qqq...A --apply-log /bak         //准备恢复数据， 恢复数据时要求清空/var/lib/mysql
 
+innobackupex --usre root --password 123qqq...A -copy-back /bak          //恢复数据
 
+chmod -R mysql:mysql /var/lib/mysql
 
+增量备份与恢复
+innobackupex --user root --password 123qqq...A /bak --no-timestamp      //完全备份
 
+innobackupex --user root --password 123qqq...A --incremental /new1 --incremental-basedir="/bak" --no-timestamp  //第一次增量备份
 
+innobackupex --user root --password 123qqq...A --incremental /new2 --incremental-basedir="/new1" --no-timestamp  //第二次增量备份
 
+增量备份与恢复(恢复前先清空目录/var/lib/mysql)
+innobackupex --user root --password 123qqq...A --apply-log --redo-only /bak     //完整备份恢复
 
+innobackupex --user root --password 123qqq...A --apply-log --redo-only /bak --incremental-dir="/new1"  //合并备份/new1到/bak
 
+innobackupex --user root --password 123qqq...A --apply-log --redo-only /bak --incremental-dir="/new2"  //合并备份new2到/bak
 
+innobackupex --user root --password 123qqq...A --copy-back /bak       //拷贝文件
+
+chown -R mysql:mysql /var/lib/mysql/  再重启服务
+
+恢复单个表
+innobackupex --user root --password 123qqq...A databases="db1" --apply-log --export /db1_bak      //导出表信息
+
+alter table db1.a discard tablespace;         //删除表空间
+
+alter table db1.a import tablespace;          //导出表信息
 
 
 
