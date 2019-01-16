@@ -156,11 +156,16 @@ mysql>grant replication slave,replication client on *.* to scalemon@'%' identifi
 
 mysql>grant select mysql.* to maxscale@'%' identified by "123qqq...A";    //创建路由用户
 
+启动服务
+#maxscale --config=/etc/maxscale.cnf
 
+在maxscale本机连接管理端口
+#maxadmin -uadmin -pmariadb -P端口
 
+访问maxscale代理
+#mysql -j服务器地址 -P端口 -u用户名 -p密码
 
-
-
+多实例
 
 
 
