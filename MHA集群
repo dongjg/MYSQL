@@ -11,8 +11,25 @@
         -运行在每台MySQL服务器上
         
 二、实现此案例需要按照如下步骤进行
+  步骤1：准备环境
+    1、在所有主机上安装Perl依赖包
+      #yum -y install perl-*
+    2、在所有数据库服务器上安装mha-node包
+      #yum -y install mha4mysql-node-0.56-0.el6.noarch.rpm
+    3、在管理主机上安装mha-node和mha-manager包
+      #yum -y install mha4mysql-node-0.56-0.el6.noarch.rpm
+      mha-manage是Perl语言的源码包
+      #perl Makefile.PL
+      #make
+      #make install
+    4、配置ssh密钥对认证登陆(所有的节点都可以对其他主机无密码登陆)
+      #ssh-keygen -f /root/.ssh/id_rsa -N ''
+      #for i in {51..56}
+      >do
+      >ssh-copy-id 192.168.4.$i
+      >done
 
-  步骤一：配置mha集群环境
+  步骤2：配置mha集群环境
     1、安装数据库
       # cd /root/mysql
       # tar -xf mysql-5.7.17.tar
