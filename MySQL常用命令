@@ -124,13 +124,32 @@ relay-log.info            //中继日志
 
 主机名-relay-bin.index     //索引文件
 
+binlog_do_db=name         //设置Master对哪些库记日志
 
+binlog_ignore_db=name     //设置Master对哪些库不记日志
 
+log_slave_updates         //允许链式复制（主从从模式）
 
+relay_log=dbsvr2-relay-bin    //指定中继日志文件名
 
+replicate_do_db=mysql     //仅复制指定库
 
+replicate_ignore_db=test  //不复制指定库
 
+show variables like 'have_dynamic_loading';       //查看是否允许动态加载模块
 
+永久启用半同步复制(添加/etc/my.cnf到[mysqld]部分)
+-主库配置
+plugin-load=rpl_semi_sync_master=semisync_master.so
+rpl_semi_sync_master_enabled=1
+-从库配置
+plugin-load=rpl_semi_sync_slave=semisync_slave.so
+rpl_semi_sync_slave_enabled=1
+
+高可用架构（主从从结构模式，master和slave需同时配置）
+plugin-load="rpl_semi_sync_master=semisync_master.so;rpl_semi_sync_slave=semisync_slave.so"
+rpl_semi_sync_master_enabled=1
+rpl_semi_sync_slave_enabled=1
 
 
 
