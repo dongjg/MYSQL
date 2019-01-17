@@ -165,11 +165,26 @@ mysql>grant select mysql.* to maxscale@'%' identified by "123qqq...A";    //创�
 访问maxscale代理
 #mysql -j服务器地址 -P端口 -u用户名 -p密码
 
-多实例
+多实例配置文件/etc/my.cnf
+  -每个实例要有独立的数据库目录和监听端口号
+  -每个实例要有独立的实例名称和独立的sock文件
+  [mysqld_multi]                                  //启用多实例
+  mysqld=/usr/local/mysql/bin/mysqld_safe         //指定进程文件路径
+  mysqladmin=/usr/local/mysql/bin/mysqladmin      //指定管理命令路径
+  user=root                                       //指定进程用户
+  
+  [mysql1]                                        //实例进程名称，1代表实例编号
+  prot=3307                                       //端口号，每个实例一个端口号
+  datadir=/dir1                                   //数据库目录，要手动创建
+  socket=/dir1/mysql.sock                         //指定socket文件的路径和名称
+  pid-file=/dir1/mysqld.pid                       //进程pid号文件位置
+  log-error=/dir1/mysqld.err                      //错误日志位置
 
+#mysqld --user=mysql --basedir=软件安装目录 --datadir=数据库目录 initialize    //初始化授权库
 
+#mysql_multi start 实例编号     //启动实例进程
 
-
+#mysqld_multi --user=root --password=密码 stop 实例编号     //停止实例进程
 
 
 
