@@ -1,0 +1,62 @@
+一、存储过程
+  -相当于时MySQL语句组成的脚本
+  -指数据库中保存的一系列SQL命令的集合
+  -可以在存储过程中使用变量、条件判断、流程控制等
+  
+  优点：
+      -提高性能
+      -可以减轻网络负担
+      -可以防止对表的直接访问
+      -避免重复编写SQL操作
+      
+二、基本使用
+  1、语法格式
+      mysql>delimiter //          //delimiter用来指定存储过程的分隔符（默认为‘;’）
+      mysql>create procedure 名称()
+          ->begin
+          ->...功能代码
+          ->end
+          ->//
+      mysql>delimiter ;
+      调用：
+      mysql>call 名称();
+      
+      mysql>delimiter //
+      mysql>create procedure db9.p1()
+          ->begin
+          ->select * from user where id=1;
+          ->select * from db9.t1;
+          ->end
+          ->//
+      mysql>delimiter ;
+      mysql>call db9.p1();
+  2、查看存储过程
+      方法1：
+      mysql>show procedure status;
+      方法2：
+      mysql>select db,name,type from mysql.proc where name="存储过程名"
+  3、删除存储过程
+      mysql>drop procedure 存储过程名;
+      
+      mysql>drop procedure db9.p1;
+  4、
+  5、
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
