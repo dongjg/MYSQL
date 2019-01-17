@@ -1,0 +1,78 @@
+一、视图
+  -虚拟表
+  -内容与真实的表相似，有字段有记录
+  -视图并不在数据库自中以存储的数据形式存在
+  -行和列的数据来自定义视图时查询所引用的基表，并且在具体引用视图时动态生成
+  -更新视图数据，就是更新基表的数据
+  -更新基表数据，视图的数据也会跟着改变
+  
+二、视图优点
+  -简单
+  -安全
+  -数据独立
+  
+三、视图使用限制
+  -不能在视图上创建索引
+  -在视图的from子句中不能使用子查询
+  -
+  
+四、视图使用
+  1、语法格式：
+    -create view 视图名称 as SQL查询
+    -create view 视图名称(字段名列表) as SQL查询
+    
+    mysql>create view db9.a1 as select name,uid,shell from db9.user;
+    mysql>create view db9.a2(id,name,password) as select id,name,password from db9.user;
+    
+  2、查看所有表的状态信息
+    -show table status;
+    -show table status where comment="view"\G;
+  3、查看创建视图的具体命令
+    -show create view 视图名;
+  4、删除视图
+    -drop view 视图名
+    
+    mysql>drop view a2;
+    
+五、视图进阶
+  1、视图中字段名不可以重复所以要定义别名
+    mysql>create view 视图名
+        ->as
+        ->select 表别名.源字段名 as 字段别名
+        ->from 源表名 表别名 left join 源表名 表别名
+        ->on 条件;
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
