@@ -39,14 +39,136 @@
       mysql>drop procedure 存储过程名;
       
       mysql>drop procedure db9.p1;
-  4、
-  5、
+三、变量
+  1、会话变量
+    -系统变量
+  2、全局变量
+    -系统变量
+    -set命令定义全局变量的修改会影响到整个服务器
+        输出：select @@hostname
+  3、用户变量
+    -在客户端连接到数据库服务的整个过程中都是有效的,断开连接后用户变量失效
+        定义： set @变量名=值      //命令行下的自定义变量
+        输出： select @变量名      //自定义变量
+              
+              mysql>set @x=7;           //自定义变量
+              mysql>set @name="lily";
+        -注意：
+              局部变量和参数变量调用时变量名前不需要加‘@’
+  4、局部变量
+    -存储过程中的begin和end之间，其仅限于在该语块中有效
+    -declare专门用来定义局部变量
   
+  5、变量类型
+    mysql>show global variables;      //查看全局变量
+    mysql>show session variables;     //查看会话变量
+    mysql>
   
+四、运算
+  1、  
+  mysql> delimiter //
+  mysql> create procedure p4()
+      -> begin
+      -> declare x int default 0;
+      -> declare y int default 0;
+      -> declare z int default 0;
+      -> select count(name) into x from db9.user where shell="/bin/bash";
+      -> select count(name) into y from db9.user where shell="/sbin/nologin";
+      -> set z = x + y;
+      -> select z;
+      -> end
+      -> //
+  Query OK, 0 rows affected (0.00 sec)
+
+  mysql> delimiter ;
+  mysql> call db9.p4;
+  +------+
+  | z    |
+  +------+
+  |   21 |
+  +------+
+  1 row in set (0.00 sec)
+
+  Query OK, 0 rows affected (0.00 sec)
   
-  
-  
-  
+  2、参数类型
+    in    输入参数        作用给存储过程传值
+    out   输出参数        该值可在存储过程内部被修改，并可返回
+    inout 输入/输出参数    调用时指定，并且可被修改和返回
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    mysql> delimiter //
+    mysql> create procedure p5(in a int,in b int)
+        -> begin
+        -> declare x int;
+        -> declare y int;
+        -> declare z int;
+        -> set x=a;
+        -> set y=b;
+        -> set z=x*y;
+        -> select z;
+        -> end
+        -> //
+  Query OK, 0 rows affected (0.00 sec)
+
+    mysql> delimiter ;
+    mysql> call p5(3,5);  
+  +------+
+  | z    |
+  +------+
+  |   15 |
+  +------+
+  1 row in set (0.00 sec)
+  Query OK, 0 rows affected (0.00 sec)
+
   
   
   
