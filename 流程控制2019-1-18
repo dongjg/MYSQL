@@ -1,0 +1,171 @@
+一、
+  1、选择结构
+    if 条件判断 then
+      代码...
+    end if;
+  
+    if 条件判断 then
+      代码...
+    else
+      代码...
+    end if;
+    
+  2、循环结构
+    while 条件判断 do
+      循环体
+      ...
+    end while;
+    
+    mysql> delimiter //
+    mysql> create procedure p11(in num int)
+        -> begin
+        -> declare x int default 1;
+        -> while x <= num do
+        -> select x;
+        -> set x=x+1;
+        -> end while;
+        -> end
+        -> //
+    Query OK, 0 rows affected (0.00 sec)
+    mysql>call p11(3);
+    
+    delimiter //
+    create procedure p12()
+    begin
+    declare x int default 1;
+    while x <= 10 do
+      select x;
+      set x=x+1;
+    end while;
+    end
+    //
+    delimiter ;
+    
+    loop死循环
+    loop
+      循环体
+      ...
+    end loop;
+    
+    repeat条件式循环
+    repeat
+      循环体
+      ...
+      until 条件判断
+    end repeat;
+    
+3、控制循环的执行
+  -leave 标签名    //跳出循环
+  -iterate 标签名  //放弃本次循环，执行先一次循环
+  
+  delimiter //
+    create procedure p12()
+    begin
+    declare x int default 1;
+    loab1:while x <= 10 do
+      if x = 6 then
+        LEAVE loab1;
+      end if;
+      select x;
+      set x=x+1;
+    end while;
+    end
+    //
+    delimiter ;
+    
+    delimiter //
+    create procedure p13()
+    begin
+      declare x int default 1;
+      load1:while x <= 10 do
+              if x = 6 then
+                set x = x + 1;
+                ITERATE load1;
+              end if;
+              select x;
+              set x = x + 1;
+           end while;
+     end
+     //
+     delimiter ;
+     call p12();
+     
+     drop procedure if exists p3;
+     delimiter //
+     create procedure p3(in x int)
+     begin
+          if x is null then
+             select * from db9.user where id=1;
+          else
+             select * from db9.user limit x;
+          end if;
+     end
+     //
+     delimiter ;
+     call p3(5);
+     call p3(10);
+     select @k;
+     select p3(@k);
+     
+     drop procedure if exists p4;
+     delimiter //
+     create procedure p4()
+     begin
+          declare x int;
+          declare y int default 1;
+          declare z int;
+          declare k int default 0;
+          select count(id) into z from db9.user;
+          while y <= z do
+            select uid into x from db9.user where id=y;
+            if x%2=0 then
+              select name,uid from db9.user where id=y;
+              set k=k+1;
+            end if;
+            set y=y+1;
+          end while;
+          select k;
+     end
+     //
+     delimiter ;
+     call p4();
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
