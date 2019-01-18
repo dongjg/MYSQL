@@ -106,16 +106,18 @@
     out   输出参数        该值可在存储过程内部被修改，并可返回
     inout 输入/输出参数    调用时指定，并且可被修改和返回
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    mysql>delimiter //
+    mysql>create procedure p7(inout x int)
+        ->begin
+        ->select x;
+        ->select count(name) into x from db9.user where shell!="/bin/bash";
+        ->select x;
+        ->end
+        ->//
+    mysql>delimiter ;
+    mysql>select @m;
+    mysql>call p7(@m)
+
     
     
     
