@@ -1,29 +1,123 @@
 一、Redis配置文件解析
+  配置文件默认位置:/etc/redis/6379.conf
   1、常用配置
-    -port 6379
-    -bind 127.0.0.1
-    -tcp-backlog 511
-    -timeout 0
-    -tcp-keepalive 300
-    -daemonize yes
-    -databases 16
-    -logfile /var/log/redis_6379.log
-    -maxclients 10000
-    -dir /var/lib/redis/6379
+    -port 6379                        //定义端口
+    -bind 127.0.0.1                   //定义连接的ip地址
+    -tcp-backlog 511                  //tcp连接总数
+    -timeout 0                        //连接超时时间,0表示无超时时间
+    -tcp-keepalive 300                //长连接时间方式运行
+    -daemonize yes                    //守护进程
+    -databases 16                     //redis服务默认数据库个数
+    -logfile /var/log/redis_6379.log  //pid文件
+    -maxclients 10000                 //最大并发连接数
+    -dir /var/lib/redis/6379          //数据库目录
   2、内存管理
     1）内存清除策略
-    -volatile-lru
-    -allkeys-lru
-    -volatile-random
-    -allkeys-random
-    -volatile-ttl
-    -noeviction
+    -volatile-lru                     //最近最少使用(针对设置了ttl的key)
+    -allkeys-lru                      //删除最少使用的key
+    -volatile-random                  //在设置了ttl的key里随即删除
+    -allkeys-random                   //随即移除key
+    -volatile-ttl                     //移除最近将要过期的key
+    -noeviction                       //不删除,写满时报错
     
     2）选项默认设置
-    -maxmemory <bytes>
-    -maxmemory-policy noeviction
-    -maxmemory-samples 5
+    -maxmemory <bytes>                //最大内存
+    -maxmemory-policy noeviction      //定义使用的策略
+    -maxmemory-samples 5              //选取模版数据的个数(用于lru和ttl策略比较)
     
     
 三、部署LNMP+Redis
-    /usr/local/nginx/sbin/nginx -t  //检查配置
+    /usr/local/nginx/sbin/nginx -t  //检查配置文件配置是否正确
+    #php -m         //查看php加载了哪些模块
+    #php -i         //查看php的详细信息
+    
+  1、安装redis
+    #yum -y install gcc make
+    #tar -xf redis-4.0.8.tar.gz
+    #cd redis-4.0.8/
+    #make
+    #make install
+    #cd utils/
+    #./install_server.sh      //按个人需求更改配置文件、pid文件等路径
+  2、查看状态
+    #/etc/init.d/redis_6379 status
+    #netstat -ntulp | grep 6379
+    
+  3、部署php
+    #yum -y install php-cli php-fpm
+    #rpm -ivh php-devel-5.4.16-42.el7.x86_64.rpm
+    #tar -xf  php-redis-2.2.4.tar.gz                 //必须有redis模块
+    #cd  phpredis-2.2.4/
+    #phpize                                         //生成一个php文件
+    #./configure --with-php-config=/usr/bin/phpconfig   //指定模块编译的路径
+    #make && make install
+      ...
+      Installing shared extensions: /usr/lib64/php/modules/  //模块文件存放的路径
+      ...
+    #vim /etc/php.ini
+      ...
+      extension_dir="/usr/lib64/php/modules"
+      extension="redis.so"
+      ...
+    # php -m |grep -i redis         //检测是否出现redis
+   
+  4、安装nginx
+    #yum -y install gcc pcre-devel openssl-devel
+    #tar -xf nginx-1.12.2.tar.gz
+    #cd nginx-1.12.2/
+    #./configure --user=ngnix --group=nginx --with-http_ssl_module
+    #make && make install
+    #vim /usr/local/nginx/conf/nginx.conf
+       ...
+       location ~ \.php$ {
+            root           html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            #fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+            include        fastcgi.conf;
+       }
+        ...
+    
+    #/usr/local/nginx/sbin/nginx
+    
+    #cd /usr/local/nginx/html
+    #vim test.php
+      <?php
+      $i=33;
+      $j=44;
+      if($i<$j){
+          echo "oK";
+        }
+      else{
+           echo "error";
+      }
+      #echo $i;
+      ?>
+      
+    #systemctl restart restart php-fpm
+    
+  5、连接redis测试
+    
+    # vim lkredis.php
+    <?php
+    $redis = new redis();
+    $redis->connect('192.168.4.51',6351);
+    $redis ->auth("123456");
+    $redis->set("redistest","666666");
+    echo $redis->get("redistest");
+    ?>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
