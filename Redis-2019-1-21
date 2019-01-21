@@ -1,0 +1,29 @@
+一、Redis配置文件解析
+  1、常用配置
+    -port 6379
+    -bind 127.0.0.1
+    -tcp-backlog 511
+    -timeout 0
+    -tcp-keepalive 300
+    -daemonize yes
+    -databases 16
+    -logfile /var/log/redis_6379.log
+    -maxclients 10000
+    -dir /var/lib/redis/6379
+  2、内存管理
+    1）内存清除策略
+    -volatile-lru
+    -allkeys-lru
+    -volatile-random
+    -allkeys-random
+    -volatile-ttl
+    -noeviction
+    
+    2）选项默认设置
+    -maxmemory <bytes>
+    -maxmemory-policy noeviction
+    -maxmemory-samples 5
+    
+    
+三、部署LNMP+Redis
+    /usr/local/nginx/sbin/nginx -t  //检查配置
