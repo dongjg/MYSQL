@@ -42,9 +42,14 @@
       #redis-trib.rb del-node 集群中主机ip:端口号 移除主机的ID
       #redis-trib.rb del-node 192.168.4.51:6351 cbc89690e51af1b5b67485382e7e927a4545fcfe
       
-      
-
-
+二、
+  1、#redis-trib.rb rebalance 192.168.4.51:6351        //重新平均分配hash槽
+  2、192.168.4.51:6351>info replication                //查看当前主从角色
+  3、把移除的redis服务器添加到集群里
+    -移除的redis服务器，默认是在集群中，添加前先清除集群信息
+    192.168.4.57:6357>cluster reset                   //清除本机的集群信息，重置集群配置命令
+    192.168.4.51:6351>cluster info                    
+    192.168.4.51:6351>slaveof no one                  //还原成独立的数据库服务器，集群模式下该命令无效
 
 
 
