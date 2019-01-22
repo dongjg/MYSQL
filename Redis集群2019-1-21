@@ -1,1 +1,46 @@
+一、管理集群
+  1、添加master主机
+    
+    -添加时不指定主机角色，默认新主机被选为master
+    #redis-trib.rb add-node 新主机ip:端口号 集群主机ip：端口号
+    #redis-trib.rb add-node 192.168.4.57:6357 192.168.4.51:6351
+    
+    -检测集群主机，可以看到新加master主机无hash槽位
+    #redis-trib.rb check 192.168.4.51:6351
+    
+    -重新分片
+    -分片时会提示指定移出hash槽个数、接收hash槽主机ID、移出hash槽的主机ID
+    #redis-trib.rb reshard 192.168.4.51:6351
+    How many slots do you want to move (from 1 to 16384)?4096   
+                              //拿出多少个hash 槽给主机192.168.4.57
+    What is the receiving node ID?  c5e0da48f335c46a2ec199faa99b830f537dd8a0   
+                              //主机192.168.4.57的id值
+    Source node #1:all        //从当前所有的主里面获取hash槽
+    Do you want to proceed with the proposed reshard plan (yes/no)?yes
+    
+  2、添加slave主机
+    -如果不指定主节点id的话，会把新节点随即添加到从节点最少的master主机下
+    #redis-trib.rb add-node --slave [--master-id id值] ip地址:端口 集群主机ip:端口号
+    #redis-trib.rb add-node --slave 192.168.4.58:6358 192.168.4.51:6351
+
+  3、移除节点
+    -移除master主机
+    -移除slave主机
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
