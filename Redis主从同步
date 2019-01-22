@@ -1,0 +1,41 @@
+一、删除redis集群
+  1、#redis-cli -h 192.168.4.51 -p 6351 shutdown
+  2、#rm -rf /var/lib/redis/6379/*
+  3、注释掉配置文件中的集群信息
+    vim /etc/redis/6379.conf
+    ...
+    #cluster-enabled yes
+    #cluster-config-file nodes-6352.conf
+    #cluster-node-timeout 5000
+    ...
+  4、#/etc/init.d/redis_6379 start
+  5、192.168.4.52>info replication       //查看当前主从关系
+  
+二、主从复制概述
+  1、手动配置从库
+    >slaveof 主库ip地址 端口号
+    192.168.4.52>slaveof 192.168.4.51 6351      //临时设置52的主库为51
+    
+  2、一主多从
+    192.168.4.53>slaveof 192.168.4.51 6351      //
+    192.168.4.54>slaveof 192.168.4.53 6353      //主从从模式 
+    
+  3、反客为主
+    -主库宕机后，手动设置从库为主库
+    >slaveof no one
+    
+  4、永久指定主从复制
+    -主库的配置
+      #vim /etc/redis/6379.conf
+        ...
+        bind 192.168.4.51
+        requirepass 123456          //指定验证密码
+        ...
+    -从库的配置
+      #vim /etc/redis/6379.conf
+        ...
+        slaveod 192.168.4.51 6351
+        masterauth 123456           //主库开启认证，本项必须设置
+        ...
+      
+    
