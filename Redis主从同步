@@ -37,5 +37,36 @@
         slaveod 192.168.4.51 6351
         masterauth 123456           //主库开启认证，本项必须设置
         ...
-      
+   5、哨兵模式
+    -主库宕机后，从库自动升级为主库
+    -在slave主机编辑sentinel.conf文件
+    -在slave主机运行哨兵程序
+    -语法：
+          sentinel monitor 主机名 ip地址 端口 票数
+          -主机名：自定义，只用于哨兵模式
+          -ip地址：master主机的ip地址
+          -端口：master主机redis服务使用的端口
+          -票数：有几台哨兵主机连不上主库时，切换主库
+     #vim /etc/sentinel.conf
+      ...
+      bind 0.0.0.0                                        //指定本机所有ip和其他主机通信
+      sentinel monitor redis51 192.168.4.51 6351 1
+      sentinel auth-pass redis51 123456                   //监视的主机的认证密码
+      ...
+     #redis-sentinel /etc/sentinel.conf
+     
+     在坏掉的redis服务器重新启动后，会自动成为哨兵模式选举出的主库的从库
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
