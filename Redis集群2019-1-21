@@ -25,7 +25,24 @@
 
   3、移除节点
     -移除master主机
+      -重新分片释放占用的hash槽，指定移出的hash槽个数、指定接收hash槽主机ID（任意主库）、指定移出hash槽主机ID
+      #redis-trib-rb reshard 192.168.4.51:6351        //重新分片
+      How many slots do you want to move (from 1 to 16384)?4096           
+                                    //移除hash 槽的个数
+      What is the receiving node ID? 474e7527eae21681c9f74c726b655a1a70665d80
+                                    //要移动给谁的id即目标主机（这里可以随机写一个master的ID）
+      Source node #1:5fed2d598f515ba9cd54fd329bed2166552ff708
+                                    //从谁那移动即源主机（这里写4.57的ID）  
+      Source node #2:done           //设置完毕
+      
+      #redis-trib.rb del-node 192.168.4.51:6351 5fed2d598f515ba9cd54fd329bed2166552ff708
+                                    //删除master主机（57主机）
     -移除slave主机
+      -从节点主机没有槽位范围，直接移除即可
+      #redis-trib.rb del-node 集群中主机ip:端口号 移除主机的ID
+      #redis-trib.rb del-node 192.168.4.51:6351 cbc89690e51af1b5b67485382e7e927a4545fcfe
+      
+      
 
 
 
