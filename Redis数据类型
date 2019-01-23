@@ -20,19 +20,137 @@
     >append name sir
     
   5、setbit key offset value
+    -对key所存储字串，设置或清除特定偏移量上的位（bit）
+    -value值可以为1或0，offset为0~2^32之间
+    -key不存在，则创建新key
+    >setbit bit 0 1       //设置bit第0位为1
+    >setbit bit 1 0       //设置bit第1位为0
+    
+  6、bitcount key
+    -统计字串中被设置为1的比特为数量
+    >setbit bits 0 1      //0001
+    >setbit bits 3 1      //1001
+    >bitcount bits        //结果为2
   
-  6、decr key    //将key中的值减1，key值不存在则先初始化为0，再减1
+  7、decr key    //将key中的值减1，key值不存在则先初始化为0，再减1
      decrby key decrement     //将key中的值减去decrement
      >
      
      
-   7、get key            //获取单个值
+  8、get key            //获取单个值
    
-   8、mget key           //同时获取多个值
+  9、mget key           //同时获取多个值
    
-   9、getrange key start end       
+  10、getrange key start end       
       -start和end是截取范围
       -负数偏移量表示从末尾开始计数，-1表示最后一个字符，-2表示倒数第二个字符
       >set first "hello world"
       >getrange first -3 -1
+      
+二、List列表操作:先进后出
+  1、lpush key values [value...]
+    -将一个或多个值插入到列表key的表头
+    -key不存在，则创建key
+    >lpush list a b c         //list值依次为c b a
+    
+  2、lrange key start stop
+    -从开始为值读取key的值到stop结束
+    >lrange list 0 2        //从0位开始，读到第二2位为止
+    >lrange list 0 -1       //从开始读到结束为止
+    >lrange list 0 -2       //从开始读到倒数第二位为止
+    
+  3、lpop key
+    -移除并返回列表头元素数据，key不存在则返回nil
+    >lpop list              //删除表头元素，可多次执行
+    
+    rpop key 
+    -删除尾部的值
+    
+  4、llen key
+    -返回列表可以的长度
+    
+  5、lindex key index
+    -返回列表中第index个值
+    >lindex key 0;
+    
+  6、lset key index value
+    -将key中index位置的值修改为value
+    >lset list 3 test         //将list中第3个值修改为test
+    
+  7、rpush key value [value...]
+    -将value插入到key的末尾
+    >rpush list3 a b c        //list3值a b c
+    >rpush list3 d            //末尾插入d
+
+三、Hash表
+  -是一个string类型的field和value的映射表
+  -一个key可以对应多个field，一个field对应一个value
+  -将一个对象存储为hash类型，较于每个字段都存储成string类型更节省空间
+  1、hset key field value
+    -将hash表中field值设置为value
+    >hset site google 'www.g.cn'
+    >hset site baidu 'www.baidu.com'
+    
+  2、hget key field
+    -获取hash表中field的值
+    >hget site goole
+    
+  3、hkeys site
+    -获取field中的所有值
+    >hkeys site
+    
+  4、hmset key field values [value...]
+    -同时给hash表中多个field赋值
+    >hmset site google baidu 12306
+    
+  5、hmget key field [field...]
+    -返回hash表中多个field的值
+    >hmget site google baidu
+    
+  6、hgetall key
+    -返回hash表中所有key名和对应的值列表
+    
+  7、hvals key
+    -返回hash表中所有key的值
+    
+  8、hdel key field [field...]
+    -删除hash表中多个field的值，不存在则忽略
+    >hdel site google baidu
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+      
+      
+      
       
