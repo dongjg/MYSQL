@@ -34,14 +34,20 @@
   
   7、decr key    //将key中的值减1，key值不存在则先初始化为0，再减1
      decrby key decrement     //将key中的值减去decrement
-     >
-     
-     
+     >set count 100
+     >decrby count 20
+         
   8、get key            //获取单个值
-   
+    -返回key存储的字符串值，若key不存在则返回null
+    -若key的值不是字串，则返回错误，get只能处理字串
+    
   9、mget key           //同时获取多个值
-   
-  10、getrange key start end       
+    -获取一个或多个key的值，空格分隔，具有原子性
+  
+  10、mset key value [value...]
+    -设置多个key值，空格分割，具有原子性
+    
+  11、getrange key start end       
       -start和end是截取范围
       -负数偏移量表示从末尾开始计数，-1表示最后一个字符，-2表示倒数第二个字符
       >set first "hello world"
