@@ -4,3 +4,77 @@
     -按照指定时间间隔，将内存中的数据集快照写入硬盘
     -术语Snapshot快照
     -恢复时，将快照文件直接读入内存
+    
+  2、RDB文件恢复数据
+    -配置文件/etc/redis/6379.conf定义数据库数据存储文件（相当于硬盘）
+      ...
+      dbfilename "dump.rdb"         //文件名
+      ...
+      
+    -数据从内存保存到硬盘的频率
+      save ""                       //禁用RDB
+      save 900 1                    //900秒内且有1次修改，存盘
+      save 300 10                   //300秒内且有10次修改，存盘
+      save 60 10000                 //60秒内且有10000次修改，存盘
+    -备份数据
+      -把/var/lib/redis/6379/dump.rdb文件备份到其他位置
+      #cp 数据库目录/dump.rdb 备份目录
+    
+    -恢复数据
+      -拷贝备份文件到数据库目录，重启redis服务
+      #cp 备份目录/dump.rdb 数据库目录/
+      #/etc/init.d/redis_端口号 start
+    
+    -手动立刻存盘
+      >save             //阻塞写存盘，即只执行存盘不允许其他操作
+      >bgsave           //不阻塞写存盘
+      
+    -在配置文件中修改以下配置项，对存盘进行优化
+      -是否对dump.rdb进行压缩
+        rdbcompression yes|no
+      -存储快照后是否使用crc16算法做数据校验
+        rdbchecksum yes|no
+      -bgsave出错时是否停止写操作
+        stop-writes-on-bgsave-error yes|no
+    
+二、AOF(和RDB同时启用时，优先级大于RDB)
+  1、只做追加操作的文件，Append Only File
+    -记录redis服务所有的写操作
+    -不断将新的写操作以追加的方式，追加到文加的末尾
+    
+  2、AOF配置文件中默认是关闭
+    #vim /etc/redis/6379.conf
+      ...
+      appendfilename "appendonly.aof"       //指定文件名
+      appendonly yes                        //启用aof，默认是no
+      ...
+      -AOF文件记录写操作的方式
+      appendfsync always                    //有新写操作立即记录
+      appendfsync everysec                  //每秒记录一次
+      appendfsync no                        //从不记录
+
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
