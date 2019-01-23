@@ -52,7 +52,20 @@
       appendfsync always                    //有新写操作立即记录
       appendfsync everysec                  //每秒记录一次
       appendfsync no                        //从不记录
-
+      
+  3、日志重新
+    -redis会记录上次重写时AOF文件大小
+    -默认配置当前aof文件是上次rewrite后大小的1倍且文件大于64M时触发
+      >auto-aof-rewrite-percentage 100
+      >auto-aof-rewrite-min-size 64mb
+    
+    -修复AOF文件
+      把文件恢复到最后一次的正确操作
+        #redis-check-aof --fix appendonly.aof
+        
+    -AOF优缺点
+      -优点
+      -缺点
       
     
     
