@@ -1,0 +1,38 @@
+一、String字符串
+  1、set key values [ex seconds] | [px milliseconds] | [nx|xx]
+    >set v1 1 ex 10       //有效期10秒
+    >set v2 1 px 100      //有效期100毫秒
+    >set i 22 nx          //i不存在时，给i赋值
+    >set i 22 xx          //i存在时，给i赋值
+    
+  2、setrange key offset values     
+      -offset 偏移量
+    >set first "hello world"
+    >setrange first 6 "Redis"
+    > get first
+    "hello Redis"
+    
+  3、strlen key    //统计字符串长度
+    >strlen first
+    
+  4、append key value    //存在则追加，不存在则创建key及value，返回key长度
+    >append name dong    
+    >append name sir
+    
+  5、setbit key offset value
+  
+  6、decr key    //将key中的值减1，key值不存在则先初始化为0，再减1
+     decrby key decrement     //将key中的值减去decrement
+     >
+     
+     
+   7、get key            //获取单个值
+   
+   8、mget key           //同时获取多个值
+   
+   9、getrange key start end       
+      -start和end是截取范围
+      -负数偏移量表示从末尾开始计数，-1表示最后一个字符，-2表示倒数第二个字符
+      >set first "hello world"
+      >getrange first -3 -1
+      
