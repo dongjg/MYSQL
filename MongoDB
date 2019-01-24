@@ -79,9 +79,95 @@
       {x:function(){/*代码*/}}
       >db.t1.save({lname:"php",dm:function(){/*<?php echo "abc"; ?>*/}})
   7、日期
-    
+    -日期被存储为自新纪元以来经过的毫秒数
+      {x:new Date()}
   8、对象
+      -对象id是一个12字节的字符串，是文档的唯一标识，自动生成。
+        {x:ObjectId()}
+        
+四、内嵌/正则表达式
+  1、正则表达式
+    {x:/正则表达式/}
+  2、内嵌
+    -文档可以嵌套其他文档，被嵌套的文档作为值来处理
+      db.t3.save({birdbook:{auther:"bird",pay:99,ver:3.0},tarena:{addr:"bg",tel:"12306",per:"sky"}})
   
+五、数据导入导出
+  1、数据导出
+    -导出为csv格式必须使用-f指定字段名列表
+    语法1：mongoexporet [--host ip地址 --port 端口] -d 库名 -c 集合名 -f 字段名1,字段名2 --type=csv > 目录名/文件名.csv
+    
+    语法2：mongoexport --host ip地址 --port 端口 -d 库名 -c 集合名 -q '{查询条件}' -f 字段名1... --type=csv > 目录名/文件名.csv
+    
+    语法3：mongoexport [--host ip地址 --port 端口] -d 库名 -c 集合名 [-q '{查询条件}' -f 字段列表] --type=json > 目录名/文件名.json
+    
+    #/usr/local/mongodb/bin/mongoexport \
+      --host 192.168.4.50 --port 27050 \
+      -d gamedb -c t1 -f name,age --type=csv >/mdb/gamedb_t1.csv
+    #/usr/local/mongodb/bin/mongoexport \
+      --host 192.168.4.50 --port 27050 \
+      -d gamedb -c t1 --type=json >/mdb/gamedb_t1.csv
+  
+  2、数据导入
+    -导入数据时，若库和集合不存在，则先创建库和集合再导入数据
+    -若库和集合已存在，则以追加的方式导入数据到集合里
+    -使用--drop选项可以删除原数据后导入新数据，--headerline忽略标题
+    
+    语法1：mongoimport --host ip地址 --port 端口 -d 库名 -c 集合名 --type=json 目录名/文件名.json
+    
+    语法2：mongoimport --host ip地址 --port 端口 -d 库名 -c 集合名 --type=csv [--headerline] [--drop] 目录名/文件名.csv
+    
+    #/usr/local/mongodb/bin/mongoimport \
+      --host 192.168.4.50 --port 27050 \
+      -d bbsdb -c user --type=json /mdb/gamedb_t1.json
+      
+    #/usr/local/mongodb/bin/mongoimport \
+      --host 192.168.4.50 --port 27050 \
+      -d bbsdb -c user5 --headerline --drop \
+      --type=csv /mdb/gamedb_t1.csv
+      
+    #cp /etc/passwd /mdb/passwd
+    #sed -i 's/:/,/g'
+    #sed -i '1iname,pass,uid,gid,comment,homedir,shell' /mdb/passwd
+    #/usr/local/mongodb/bin/mongoimport --host 192.168.4.50 --port 27050 \
+      -d bbsdb -c user0 --headerline --type=csv /mdb/passwd
+    #/usr/local/mongodb/bin/mongo --host 192.168.4.50 --port 27050
+    >use bbsdb
+    >db.user0.count()
+    >db.user0.find()
+      
+  3、数据备份恢复
+    默认情况下不备份local和config两个库
+    
+    -备份数据所有库到当前目录下的dump目录下（在哪个目录下执行在哪创建dump目录）
+      #mongodump [--host ip地址 --port 端口]
+      
+    -备份时指定备份的库和备份目录
+      #mongodump [--host ip地址 --port 端口] -d 数据库名 -c集合名 -o 目录
+      
+    -查看bson文件内容
+      #bsondump ./dump/bbs/t1.bson
+  4、
+  5、
+  6、
+  7、
+  8、
+  9、
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+        
   
   
   
