@@ -1,0 +1,97 @@
+一、搭建MongoDB服务器
+  本实验直接下载免安装的软件包，解压后即可使用
+  1、mkdir /usr/local/mongodb
+  2、tar -xf mongodb-linux-x86_64-rhel70-3.6.3.tgz 
+  3、cd mongodb-linux-x86_64-rhel70-3.6.3/
+  4、cp -r bin/ /usr/local/mongodb/
+  5、mkdir -p etc log data/db
+  6、编写配置文件
+    #vim /usr/local/mongodb/etc/mongodb.conf
+      logpath=/usr/local/mongodb/log/mongodb.log    
+      logappend=true                                  //追加的方式记录
+      dbpath=/usr/local/mongodb/data/db               //数据库目录
+      fork=true                                       //守护进程方式运行
+  7、启动服务
+    #/usr/local/mongodb/bin//mongod -f /usr/local/mongodb/etc/mongodb.conf
+    定义别名：
+    #alias startmdb='/usr/local/mongodb/bin//mongod -f /usr/local/mongodb/etc/mongodb.conf'
+    #alias stopmdb='/usr/local/mongodb/bin//mongod -f /usr/local/mongodb/etc/mongodb.conf --shutdown'
+    
+  8、查看服务
+    #ss -ntulp | grep :27017        //查看端口
+    #ps -C mongod                   //查看进程
+
+二、MDB连接服务
+  1、本地连接，默认没有密码
+    #/usr/local/mongodb/bin/mongo             //连接mongodb服务器
+    
+  2、启动mongodb服务定义服务使用的ip地址及端口号
+     #vim /usr/local/mongodb/etc/mongodb.conf
+      bind_ip=192.168.4.50
+      port=27050
+      
+  3、连接时指定ip和端口号
+    #/usr/local/mongodb/bin/mongo --host 192.168.4.50 --port 27050
+  
+三、数据库管理
+  1、查看、创建、切换、删除库
+    >show dbs                     //查看已有库
+    >db                           //显示当前所在的库
+    >use 库名                     //切换库，若不存在延时创建库
+    >show collections 或 show tables   //查看库下已有的集合
+    >db.dropDatabase()            //删除当前所在的库
+    >db.集合名.drop()              //删除集合
+    >db.集合名.save({","})         //创建集合，集合不存在时，创建并添加文档
+    
+  2、查看、统计、添加、删除文档
+    >db.集合名.find()
+    >db.集合名.count()
+    >db.集合名.insert({"name":"jim"})
+    >db.集合名.find({条件})
+    >db.集合名.findOne()                 //返回一条文档
+    >db.集合名.remove({})                //删除所有文档
+    >db.集合名.remove({条件})             //删除匹配的所有文档
+  
+三、数据类型
+  1、字符串string
+    >db.t2.save({name:“张三”})
+  2、布尔bool
+    -布尔类型有两个值true和false
+      {marry:false}
+  3、空null
+    -用于表示空值或者不存在的字段，
+      {x:null}
+  4、数组
+    -shell默认使用64位浮点型数值
+    
+    -NumberInt(4字节整数)
+      {x:NumberInt(3)}
+    
+    -NumberLong(8字节整数)
+      {x:NumberLong(3)}
+      
+  5、数组array
+    -数组列表或数据集可以表示为数组
+      {x:["a","b","c"]}
+  
+  6、代码
+    -查询和文档中可以包括任何JavaScript代码
+      {x:function(){/*代码*/}}
+      >db.t1.save({lname:"php",dm:function(){/*<?php echo "abc"; ?>*/}})
+  7、日期
+    
+  8、对象
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  3、
