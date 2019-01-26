@@ -1,0 +1,72 @@
+一、设置账号有效期
+1、检查系统是否有用户信息
+  #id 用户名
+  #chage -l 用户名          //查看用户信息
+    选项：
+        -d 0  强制修改密码
+          #chage -d 0 用户名
+        -E yytt-mm-dd   指定失效日期(-1取消)
+          #chage -E 2019-2-2 用户名
+2、账号锁定/解锁
+  #passwd [选项] 用户名
+    选项：
+        -l    锁定
+        -u    解锁
+        -S    看状态
+        -d    清除密码
+3、和系统账号有关的系统文件
+  配置文件：/etc/login.defs          //对新建用户有效
+          /etc/shadow
+          /etc/issue                //本地登录提示信息伪装
+          /etc/issue.net            //网络登录提示信息伪装
+          /etc/group
+          /etc/gshadow
+          /etc/skel
+          
+4、文件系统安全
+  EXT3/EXT4的文件属性控制
+  -chattr、lsattr
+  控制方式：+、-、=
+      属性i：不可变（immutable）
+      属性a：仅可追加（append only）
+  
+5、安全日志/var/log/secure
+  -分析su切换的使用情况
+  
+  #su - [账户名称] -c ‘命令’
+  #su - -c "命令"       //以管理员身份执行命令
+  
+6、提权配置文件/etc/sudoers
+   打开命令：
+            #visudo /etc/sudoers  或
+            #vim /etc/sudoers
+            提权格式：
+            普通用户命令  主机名列表=命令列表（写命令的绝对路径） 指定服务名
+           #vim /etc/sudoers
+            root    ALL=(ALL)       ALL
+
+            dc localhost,mysql50=/usr/bin/systemctl * httpd,/usr/bin/vim /etc/httpd/conf/httpd.conf
+
+            tc localhost,mysql50=/usr/bin/systemctl * mysqld,/usr/bin/vim /etc/my.cnf
+
+            nb localhost,mysql50=/usr/bin/systemctl * mysqld,/usr/bin/vim /etc/my.cnf,
+                /usr/bin/systemctl * httpd,/usr/bin/vim /etc/httpd/conf/httpd.conf,NOPASSWD:ALL
+
+  7、sudo
+    #sudo -l
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
